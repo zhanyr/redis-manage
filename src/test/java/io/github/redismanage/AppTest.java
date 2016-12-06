@@ -1,4 +1,4 @@
-package io.github.zhanyr;
+package io.github.redismanage;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
