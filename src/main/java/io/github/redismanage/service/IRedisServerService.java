@@ -19,5 +19,10 @@ public interface IRedisServerService {
      */
     int addServer(String name, String host, String port, String password) throws Exception;
 
+    /**
+     * 获取一个合法的server id
+     * @return
+     * @throws Exception
+     */
     int gerServerId() throws Exception;
 }

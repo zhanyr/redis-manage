@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 
@@ -23,7 +25,7 @@ public class PropertyUtils {
                 file.createNewFile();
             }
 
-            inputStream = PropertyUtils.class.getClassLoader().getResourceAsStream(propertyFile);
+            inputStream = new BufferedInputStream(new FileInputStream(propertyFile));
 
             Properties properties = new Properties();
             properties.load(inputStream);
@@ -53,6 +55,21 @@ public class PropertyUtils {
         prop.store(outputStream, "add key = " + key + ", value = " + value);
     }
 
+    /**
+     * 一次添加或修改多个键值对
+     * @param propertyFile
+     * @param keyValue
+     * @throws Exception
+     */
+    public static void add(String propertyFile, Map<String, String> keyValue) throws Exception {
+        Properties prop = loadProperties(propertyFile);
+        OutputStream outputStream = new FileOutputStream(propertyFile);
+        for (Map.Entry<String, String> entry:keyValue.entrySet()) {
+            prop.setProperty(entry.getKey(), entry.getValue());
+        }
+        prop.store(outputStream, "add keyValues. keyValues = " + keyValue.toString());
+    }
+
 
     /**
      * 删除key
@@ -60,10 +77,22 @@ public class PropertyUtils {
      * @param key
      * @throws Exception
      */
-    public static void remove(String propertyFile, String key) throws Exception{
+    public static void remove(String propertyFile, String key) throws Exception {
         Properties properties = loadProperties(propertyFile);
         OutputStream outputStream = new FileOutputStream(propertyFile);
         properties.remove(key);
         properties.store(outputStream, "delete key = " + key);
+    }
+
+    /**
+     * 根据key获取对应的配置
+     * @param propertyFile
+     * @param key
+     * @return
+     * @throws Exception
+     */
+    public static String getValueByKey(String propertyFile, String key) throws Exception {
+        Properties properties = loadProperties(propertyFile);
+        return Optional.ofNullable(properties.getProperty(key)).orElse("");
     }
 }
